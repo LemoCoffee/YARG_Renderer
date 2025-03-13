@@ -66,8 +66,6 @@ namespace YARG_Renderer.Geometry
                 for (int w = 0; w < Resolution.X; w++)
                 {
                     double rayAngle = (w - hResX) * dYaw;
-                    // AI Code
-                    // double rayAngle = Math.Atan((w - hResX) * Math.Tan(HorizontalFOV / 2.0) / hResX);
                     double sliceDepth = depth / Math.Cos(LUtils.ToEulerAngles(Rotation).Y);
 
                     float dx = (float)(Math.Sin(rayAngle) * depth);

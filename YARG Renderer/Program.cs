@@ -162,7 +162,7 @@ namespace YARG_Renderer
                     //camera.Position += Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
                     if (lookMode)
                     {
-                        camera.Rotation = Quaternion.Normalize(Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitX, -(float)Math.PI / 32)));
+                        camera.Rotation = Quaternion.Normalize(Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitX, (float)Math.PI / 32)));
                     }
                     else
                     {
@@ -175,7 +175,7 @@ namespace YARG_Renderer
                     //camera.Position -= Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
                     if (lookMode)
                     {
-                        camera.Rotation = Quaternion.Normalize(Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitX, (float)Math.PI / 32)));
+                        camera.Rotation = Quaternion.Normalize(Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitX, -(float)Math.PI / 32)));
                     }
                     else
                     {
