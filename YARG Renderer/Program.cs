@@ -24,6 +24,7 @@ namespace YARG_Renderer
         static bool renderMap = false;
         static WindowRenderer renderer = null;
         static bool lookMode = false;
+        static Vector3 moveDir = Vector3.Zero;
 
         [STAThread]
         static void Main()
@@ -132,54 +133,51 @@ namespace YARG_Renderer
                     break;
                 case Keys.Left:
                     // Handle Left Arrow key press
-                    //camera.Position += Vector3.UnitZ * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
-                    //camera.Position += Vector3.UnitX * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
                     if (lookMode)
                     {
                         camera.Rotation = Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitY, -(float)Math.PI / 32));
                     }
                     else
                     {
-                        camera.Position -= Vector3.UnitX;
+                        camera.Position += Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position -= Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
                     }
                     break;
                 case Keys.Right:
                     // Handle Right Arrow key press
-                    //camera.Position -= Vector3.UnitZ * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
-                    //camera.Position -= Vector3.UnitX * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
                     if (lookMode)
                     {
                         camera.Rotation = Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitY, (float)Math.PI / 32));
                     }
                     else
                     {
-                        camera.Position += Vector3.UnitX;
+                        camera.Position -= Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position += Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
                     }
                     break;
                 case Keys.Up:
                     // Handle Up Arrow key press
-                    //camera.Position += Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
-                    //camera.Position += Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
                     if (lookMode)
                     {
                         camera.Rotation = Quaternion.Normalize(Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitX, (float)Math.PI / 32)));
                     }
                     else
                     {
-                        camera.Position -= Vector3.UnitZ;
+                        camera.Position += Vector3.UnitZ * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position += Vector3.UnitX * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
                     }
                     break;
                 case Keys.Down:
                     // Handle Down Arrow key press
-                    //camera.Position -= Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
-                    //camera.Position -= Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
+                    //
                     if (lookMode)
                     {
                         camera.Rotation = Quaternion.Normalize(Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitX, -(float)Math.PI / 32)));
                     }
                     else
                     {
-                        camera.Position += Vector3.UnitZ;
+                        camera.Position -= Vector3.UnitZ * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position -= Vector3.UnitX * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
                     }
                     break;
             }
