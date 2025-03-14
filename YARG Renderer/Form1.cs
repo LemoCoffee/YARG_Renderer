@@ -173,51 +173,6 @@ namespace YARG_Renderer
 
             return true;
         }
-
-        public bool OldRenderTopDown(Camera camera, List<Shape> geometry, Graphics g)
-        {
-
-            //g.TranslateTransform(camera.Position.X, camera.Position.Y);
-
-            (Shape, float, Vector3)[] contacts = camera.CastRays(geometry);
-
-            Pen raycastPen = new Pen(Color.Black, 1);
-            Pen raycastHitPen = new Pen(Color.Red, 1);
-
-            Brush bgPen = new SolidBrush(Color.Yellow);
-
-            g.FillRectangle(bgPen, 0, 0, (int)camera.Resolution.X, (int)camera.Resolution.Y);
-
-            foreach (Shape shape in geometry)
-            {
-                // Treat all shapes as circles for now because I cannot be bothered
-                float x = shape.Position.X;
-                float z = shape.Position.Z;
-                g.DrawEllipse(raycastPen, x - (shape.Scale.X / 2), z - (shape.Scale.Z / 2), shape.Scale.X, shape.Scale.Z);
-            }
-            System.Diagnostics.Debug.WriteLine(contacts.Length);
-            for (int i = 0; i < contacts.Length; i++)
-            {
-                Vector3 start = camera.Rays[i].Origin;
-                Vector3 end = start + (camera.Rays[i].Direction * contacts[i].Item2);
-                if (contacts[i].Item1 == null)
-                {
-                    //end = start + (camera.rays[i].Direction * 50);
-                    //g.DrawLine(raycastPen, start.X, start.Z, end.X, end.Z);
-                }
-                else
-                {
-                    g.DrawLine(raycastHitPen, start.X, start.Z, end.X, end.Z);
-                }
-                //System.Diagnostics.Debug.WriteLine("Rendering!");
-            }
-
-            raycastHitPen.Dispose();
-            raycastPen.Dispose();
-            bgPen.Dispose();
-
-            return true;
-        }
     }
 }
 
