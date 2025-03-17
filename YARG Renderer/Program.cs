@@ -58,20 +58,27 @@ namespace YARG_Renderer
         static void PopulateGeometry()
         {
             Material blue = new Material().SetColor(Color.AliceBlue);
+            Material deep = new Material().SetColor(Color.Blue);
             Material lime = new Material().SetColor(Color.Lime);
             Material gold = new Material().SetColor(Color.Gold);
             Material darn = new Material().SetColor(Color.FromArgb(255, 31, 30, 51));
             world = new World();
-            world.geometry.Add(new Column(new Vector3(15, 0, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(blue));
-            world.geometry.Add(new Column(new Vector3(5, 10, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(lime));
-            world.geometry.Add(new Column(new Vector3(3, 10, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(gold));
+            world.geometry.Add(new Sphere(new Vector3(15, 0, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(blue));
+            /*world.geometry.Add(new Sphere(new Vector3(5, 10, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(lime));
+            world.geometry.Add(new Sphere(new Vector3(3, 10, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(gold));
             //world.geometry.Add(new Column(new Vector3(5, 10, -15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(gold));
             world.geometry.Add(new Plane(new Vector3(0, -1, 0), -15).SetMaterial(gold));
             world.geometry.Add(new Plane(new Vector3(0, 1, 0), -15).SetMaterial(darn));
             world.geometry.Add(new Plane(new Vector3(0, 0, -1), -20).SetMaterial(blue));
             world.geometry.Add(new Plane(new Vector3(1, 0, 0), -20).SetMaterial(blue));
             world.geometry.Add(new Plane(new Vector3(-1, 0, 0), -40).SetMaterial(blue));
-            world.geometry.Add(new Column(new Vector3(0, 10, 0), new Quaternion(0, 0, 0, 1), new Vector3(1, 1, 1)));
+            world.geometry.Add(new Sphere(new Vector3(0, 10, 0), new Quaternion(0, 0, 0, 1), new Vector3(1, 1, 1)));*/
+            Vector3[] verts = { new Vector3(-1, -1, 0), new Vector3(0, -3, -4), new Vector3(1, -1, 0) };
+            Polygon poly = new Polygon(verts, new Vector3(1, 1, 1));
+            world.geometry.Add(new Plane(poly.GetNormal(), Vector3.Dot(poly.GetNormal(), verts[0])));
+            world.geometry.Add(new Sphere(poly.Vertices[0], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(lime));
+            world.geometry.Add(new Sphere(poly.Vertices[1], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(gold));
+            world.geometry.Add(new Sphere(poly.Vertices[2], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(deep));
         }
 
         static void InitializeRenderBuffers()
@@ -169,7 +176,6 @@ namespace YARG_Renderer
                     break;
                 case Keys.Down:
                     // Handle Down Arrow key press
-                    //
                     if (lookMode)
                     {
                         camera.Rotation = Quaternion.Normalize(Quaternion.Multiply(camera.Rotation, Quaternion.CreateFromAxisAngle(Vector3.UnitX, -(float)Math.PI / 32)));

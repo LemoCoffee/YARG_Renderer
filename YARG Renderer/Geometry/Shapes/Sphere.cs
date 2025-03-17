@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace YARG_Renderer.Geometry.Shapes
 {
-    class Column : Shape
+    class Sphere : Shape
     {
-        public Column(Vector3 position, Quaternion rotation, Vector3 scale) : base(position, rotation, scale)
+        public Sphere(Vector3 position, Quaternion rotation, Vector3 scale) : base(position, rotation, scale)
         {
         }
 
@@ -34,7 +34,7 @@ namespace YARG_Renderer.Geometry.Shapes
             t = projectedDistance.Length() - m;
             normal = Vector3.Normalize(ray.PointAt(t) - Position);
 
-            return true;
+            return t > 0;
         }
     }
 }

@@ -76,7 +76,7 @@ namespace YARG_Renderer
                 int pX = (i % (int)camera.Resolution.X) * pixelWidth;
                 int pY = (i / (int)camera.Resolution.X) * pixelHeight;
 
-                if (contacts[i].Item1 != null && contacts[i].Item2 != 0)
+                if (contacts[i].Item1 != null && contacts[i].Item2 > 0)
                 {
                     Color pixelColor = GetColor(camera, contacts[i].Item1, camera.Rays[i], contacts[i].Item2, contacts[i].Item3);
                     g.FillRectangle(new SolidBrush(pixelColor), pX, pY, pixelWidth, pixelHeight);
