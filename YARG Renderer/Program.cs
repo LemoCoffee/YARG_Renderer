@@ -75,7 +75,8 @@ namespace YARG_Renderer
             world.geometry.Add(new Sphere(new Vector3(0, 10, 0), new Quaternion(0, 0, 0, 1), new Vector3(1, 1, 1)));*/
             Vector3[] verts = { new Vector3(-1, -1, 0), new Vector3(0, -3, -4), new Vector3(1, -1, 0) };
             Polygon poly = new Polygon(verts, new Vector3(1, 1, 1));
-            world.geometry.Add(new Plane(poly.GetNormal(), Vector3.Dot(poly.GetNormal(), verts[0])));
+            world.geometry.Add(poly);
+            //world.geometry.Add(new Plane(poly.GetNormal(), Vector3.Dot(poly.GetNormal(), verts[0])));
             world.geometry.Add(new Sphere(poly.Vertices[0], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(lime));
             world.geometry.Add(new Sphere(poly.Vertices[1], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(gold));
             world.geometry.Add(new Sphere(poly.Vertices[2], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(deep));

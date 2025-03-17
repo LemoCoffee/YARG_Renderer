@@ -20,7 +20,18 @@ namespace YARG_Renderer.Geometry.Shapes
 
         public override bool Intersect(Ray ray, out float t, out Vector3 normal)
         {
-            throw new NotImplementedException();
+            normal = this.GetNormal();
+            t = -1;
+
+            float denom = Vector3.Dot(ray.Direction, normal);
+
+            if (Math.Abs(denom) > ray.EPSILON)
+            {
+                Vector3 dist = ray.Origin - (GetNormal() * (Vector3.Dot(GetNormal(), Vertices[0])));
+                t = -Vector3.Dot(dist, normal) / denom;
+            }
+
+            return t >= 0 && Inside(ray.PointAt(t));
         }
 
         public Vector3[] LocalVertices()
@@ -53,9 +64,24 @@ namespace YARG_Renderer.Geometry.Shapes
             return Vector3.Normalize(normal);
         }
 
-        protected bool Inside(Vector3 p, Vector3 v1, Vector3 v2)
+        protected bool Inside(Vector3 p)
         {
-            throw new NotImplementedException();
+            Vector3 P = p - Position;
+            Vector3 N = GetNormal();
+
+            Vector3 v01 = Vertices[1] - Vertices[0];
+            Vector3 v12 = Vertices[2] - Vertices[1];
+            Vector3 v02 = Vertices[0] - Vertices[2];
+
+            Vector3 v0p = P - Vertices[0];
+            Vector3 v1p = P - Vertices[1];
+            Vector3 v2p = P - Vertices[2];
+
+            return (
+                (Vector3.Dot(N, Vector3.Cross(v01, v0p)) > 0) &&
+                (Vector3.Dot(N, Vector3.Cross(v12, v1p)) > 0) &&
+                (Vector3.Dot(N, Vector3.Cross(v02, v2p)) > 0)
+            );
         }
     }
 }
