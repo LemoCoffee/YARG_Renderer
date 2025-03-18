@@ -38,7 +38,8 @@ namespace YARG_Renderer.Geometry
             this.HorizontalFOV = horizontalFOV;
             this.VerticalFOV = verticalFOV;
             //this.Resolution = new Vector2(1920/4, 1080/4);
-            this.Resolution = new Vector2(250, 250);
+            //this.Resolution = new Vector2(250, 250);
+            this.Resolution = new Vector2(50, 50);
         }
 
         // Repopulate the rays array with new rays

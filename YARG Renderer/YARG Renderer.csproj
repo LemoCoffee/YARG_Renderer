@@ -56,10 +56,12 @@
     <Compile Include="Geometry\Camera.cs" />
     <Compile Include="Geometry\Material.cs" />
     <Compile Include="Geometry\Ray.cs" />
+    <Compile Include="Geometry\Shapes\Mesh.cs" />
     <Compile Include="Geometry\Shapes\Sphere.cs" />
     <Compile Include="Geometry\Shapes\Plane.cs" />
-    <Compile Include="Geometry\Shapes\Polygon.cs" />
+    <Compile Include="Geometry\Shapes\Tri.cs" />
     <Compile Include="Geometry\Shapes\Shape.cs" />
+    <Compile Include="Geometry\Vertex.cs" />
     <Compile Include="Geometry\World.cs" />
     <Compile Include="LUtils.cs" />
     <Compile Include="Program.cs" />

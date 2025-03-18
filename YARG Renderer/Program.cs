@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using YARG_Renderer.Geometry;
 using YARG_Renderer.Geometry.Shapes;
 using Plane = YARG_Renderer.Geometry.Shapes.Plane;
+using System.IO;
 
 namespace YARG_Renderer
 {
@@ -28,7 +29,7 @@ namespace YARG_Renderer
 
         [STAThread]
         static void Main()
-        { 
+        {
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -48,6 +49,12 @@ namespace YARG_Renderer
 
             System.Diagnostics.Debug.WriteLine("Starting...");
             Application.Run(window);
+
+            /*foreach (String i in File.ReadAllLines(Path.Combine(Directory.GetCurrentDirectory(), "suzanne.obj")))
+            {
+                System.Diagnostics.Debug.WriteLine(i);
+            }*/
+            
         }
 
         static void InitializeCamera()
@@ -63,7 +70,7 @@ namespace YARG_Renderer
             Material gold = new Material().SetColor(Color.Gold);
             Material darn = new Material().SetColor(Color.FromArgb(255, 31, 30, 51));
             world = new World();
-            world.geometry.Add(new Sphere(new Vector3(15, 0, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(blue));
+            //world.geometry.Add(new Sphere(new Vector3(15, 0, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(blue));
             /*world.geometry.Add(new Sphere(new Vector3(5, 10, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(lime));
             world.geometry.Add(new Sphere(new Vector3(3, 10, 15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(gold));
             //world.geometry.Add(new Column(new Vector3(5, 10, -15), new Quaternion(0, 0, 0, 1), new Vector3(3, 3, 3)).SetMaterial(gold));
@@ -72,14 +79,21 @@ namespace YARG_Renderer
             world.geometry.Add(new Plane(new Vector3(0, 0, -1), -20).SetMaterial(blue));
             world.geometry.Add(new Plane(new Vector3(1, 0, 0), -20).SetMaterial(blue));
             world.geometry.Add(new Plane(new Vector3(-1, 0, 0), -40).SetMaterial(blue));
-            world.geometry.Add(new Sphere(new Vector3(0, 10, 0), new Quaternion(0, 0, 0, 1), new Vector3(1, 1, 1)));*/
-            Vector3[] verts = { new Vector3(-1, -1, 0), new Vector3(0, -3, -4), new Vector3(1, -1, 0) };
-            Polygon poly = new Polygon(verts, new Vector3(1, 1, 1));
-            world.geometry.Add(poly);
+            world.geometry.Add(new Sphere(new Vector3(0, 10, 0), new Quaternion(0, 0, 0, 1), new Vector3(1, 1, 1)));
+            world.geometry.Add(new Mesh(Vector3.Zero, Quaternion.Identity, Vector3.One, Path.Combine(Directory.GetCurrentDirectory(), "suzanne.obj")));
+            Vertex[] verts = { new Vertex(-1, -1, 0), new Vertex(0, -3, -4), new Vertex(1, -1, 0) };
+            Vertex[] verts2 = { verts[0], verts[1], new Vertex(-1, -3, 0) };
+
+            Tri poly = new Tri(verts, new Vector3(1, 1, 1));
+            Tri poly2 = new Tri(verts2, new Vector3(1, 1, 1));*/
+            //world.geometry.Add(new Sphere(poly.Vertices[0].Position, new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(lime));
+            //world.geometry.Add(new Sphere(poly.Vertices[1].Position, new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(gold));
+            //world.geometry.Add(new Sphere(poly.Vertices[2].Position, new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(deep));
+            //world.geometry.Add(poly);
+            //world.geometry.Add(poly2);
             //world.geometry.Add(new Plane(poly.GetNormal(), Vector3.Dot(poly.GetNormal(), verts[0])));
-            world.geometry.Add(new Sphere(poly.Vertices[0], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(lime));
-            world.geometry.Add(new Sphere(poly.Vertices[1], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(gold));
-            world.geometry.Add(new Sphere(poly.Vertices[2], new Quaternion(0, 0, 0, 1), new Vector3(0.5f, 0.5f, 0.5f)).SetMaterial(deep));
+            String suzanne = Path.Combine(Directory.GetCurrentDirectory(), "suzanne.obj");
+            world.geometry.Add(new Mesh(new Vector3(0, 0, 0), Quaternion.Identity, Vector3.One, suzanne));
         }
 
         static void InitializeRenderBuffers()

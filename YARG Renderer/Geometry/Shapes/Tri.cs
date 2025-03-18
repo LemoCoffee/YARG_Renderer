@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace YARG_Renderer.Geometry.Shapes
 {
-    class Polygon : Shape
+    class Tri : Shape
     {
-        public Vector3[] Vertices { get; set; }
+        public Vertex[] Vertices { get; set; }
 
-        public Polygon(Vector3[] vertices, Vector3 scale) : this(vertices, Vector3.Zero, scale) { }
+        public Tri(Vertex[] vertices) : this(vertices, Vector3.One) { }
 
-        public Polygon(Vector3[] vertices, Vector3 origin, Vector3 scale) : base(origin, Quaternion.Identity, scale) 
+        public Tri(Vertex[] vertices, Vector3 scale) : this(vertices, Vector3.Zero, scale) { }
+
+        public Tri(Vertex[] vertices, Vector3 origin, Vector3 scale) : base(origin, Quaternion.Identity, scale) 
         {
             Vertices = vertices;
         }
@@ -27,7 +29,7 @@ namespace YARG_Renderer.Geometry.Shapes
 
             if (Math.Abs(denom) > ray.EPSILON)
             {
-                Vector3 dist = ray.Origin - (GetNormal() * (Vector3.Dot(GetNormal(), Vertices[0])));
+                Vector3 dist = ray.Origin - (GetNormal() * (Vector3.Dot(GetNormal(), Vertices[0].Position)));
                 t = -Vector3.Dot(dist, normal) / denom;
             }
 
@@ -40,7 +42,7 @@ namespace YARG_Renderer.Geometry.Shapes
 
             for (int i = 0; i < Vertices.Length; i++)
             {
-                output[i] = Vertices[i] - (Vertices[0] + Position);
+                output[i] = Vertices[i].Position - (Vertices[0].Position + Position);
             }
 
             return output;
@@ -69,13 +71,13 @@ namespace YARG_Renderer.Geometry.Shapes
             Vector3 P = p - Position;
             Vector3 N = GetNormal();
 
-            Vector3 v01 = Vertices[1] - Vertices[0];
-            Vector3 v12 = Vertices[2] - Vertices[1];
-            Vector3 v02 = Vertices[0] - Vertices[2];
+            Vector3 v01 = Vertices[1].Position - Vertices[0].Position;
+            Vector3 v12 = Vertices[2].Position - Vertices[1].Position;
+            Vector3 v02 = Vertices[0].Position - Vertices[2].Position;
 
-            Vector3 v0p = P - Vertices[0];
-            Vector3 v1p = P - Vertices[1];
-            Vector3 v2p = P - Vertices[2];
+            Vector3 v0p = P - Vertices[0].Position;
+            Vector3 v1p = P - Vertices[1].Position;
+            Vector3 v2p = P - Vertices[2].Position;
 
             return (
                 (Vector3.Dot(N, Vector3.Cross(v01, v0p)) > 0) &&

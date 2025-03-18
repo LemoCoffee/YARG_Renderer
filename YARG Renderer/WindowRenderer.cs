@@ -54,7 +54,7 @@ namespace YARG_Renderer
         {
             if (!Window.IsDisposed)
             {
-                World.geometry[0].Position += Vector3.UnitX * 0.1f;
+                //((Geometry.Shapes.Tri)World.geometry[3]).Vertices[1].Position += Vector3.UnitX * 0.1f;
                 using (Graphics g = Graphics.FromImage(buffer))
                 {
 
