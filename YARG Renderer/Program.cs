@@ -59,7 +59,7 @@ namespace YARG_Renderer
 
         static void InitializeCamera()
         {
-            camera = new Camera(new Vector3(0, 0, 0), LUtils.ToQuaternion(new Vector3(0, 0 * (float)Math.PI / 4, 0)), (float)Math.PI / 2, (float)Math.PI / 2);
+            camera = new Camera(new Vector3(10, 0, 0), LUtils.ToQuaternion(new Vector3(0, 0 * (float)Math.PI / 4, 0)), (float)Math.PI / 2, (float)Math.PI / 2);
         }
 
         static void PopulateGeometry()

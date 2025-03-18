@@ -13,9 +13,13 @@ namespace YARG_Renderer.Geometry.Shapes
         public List<Vertex> Vertices;
         public List<Tri> Faces;
 
+        public Vector3 MinBound;
+        public Vector3 MaxBound;
+
         public Mesh(Vector3 position, Quaternion rotation, Vector3 scale, String path) : base(position, rotation, scale)
         {
             ParseOBJ(path);
+            CalculateRoughBounds();
         }
 
         public override bool Intersect(Ray ray, out float t, out Vector3 normal)
@@ -23,6 +27,11 @@ namespace YARG_Renderer.Geometry.Shapes
             t = float.MaxValue;
             normal = Vector3.Zero;
             bool isect = false;
+
+            if (!BoundaryIntersect(ray))
+            {
+                return false;
+            }
 
             for (int i = 1; i < Faces.Count; i++)
             {
@@ -46,6 +55,79 @@ namespace YARG_Renderer.Geometry.Shapes
             return isect;
         }
 
+        private bool BoundaryIntersect(Ray ray)
+        {
+            float tmin, tmax, tymin, tymax, tzmin, tzmax;
+
+            Vector3[] bounds = { MinBound, MaxBound };
+            int[] sign = {
+                ray.Direction.X < 0 ? 1 : 0,
+                ray.Direction.Y < 0 ? 1 : 0,
+                ray.Direction.Z < 0 ? 1 : 0
+            };
+
+            tmin = (bounds[sign[0]].X - ray.Origin.X) / ray.Direction.X;
+            tmax = (bounds[1 - sign[0]].X - ray.Origin.X) / ray.Direction.X;
+            tymin = (bounds[sign[1]].Y - ray.Origin.Y) / ray.Direction.Y;
+            tymax = (bounds[1 - sign[1]].Y - ray.Origin.Y) / ray.Direction.Y;
+
+            if ((tmin > tymax) || (tymin > tmax))
+                return false;
+
+            if (tymin > tmin)
+                tmin = tymin;
+            if (tymax < tmax)
+                tmax = tymax;
+
+            tzmin = (bounds[sign[2]].Z - ray.Origin.Z) / ray.Direction.Z;
+            tzmax = (bounds[1 - sign[2]].Z - ray.Origin.Z) / ray.Direction.Z;
+
+            if ((tmin > tzmax) || (tzmin > tmax))
+                return false;
+
+            if (tzmin > tmin)
+                tmin = tzmin;
+            if (tzmax < tmax)
+                tmax = tzmax;
+
+            return true;
+        }
+
+        private void CalculateRoughBounds ()
+        {
+            MinBound = Vertices[0].Position;
+            MaxBound = Vertices[0].Position;
+
+            foreach (Vertex v in Vertices)
+            {
+                if (v.Position.X > MaxBound.X)
+                {
+                    MaxBound.X = v.Position.X;
+                } 
+                else if (v.Position.X < MinBound.X)
+                {
+                    MinBound.X = v.Position.X;
+                }
+
+                if (v.Position.Y > MaxBound.Y)
+                {
+                    MaxBound.Y = v.Position.Y;
+                }
+                else if (v.Position.Y < MinBound.Y)
+                {
+                    MinBound.Y = v.Position.Y;
+                }
+
+                if (v.Position.Z > MaxBound.Z)
+                {
+                    MaxBound.Z = v.Position.Z;
+                }
+                else if (v.Position.Z < MinBound.Z)
+                {
+                    MinBound.Z = v.Position.Z;
+                }
+            }
+        }
         
         private void ParseOBJ (String path)
         {

@@ -11,6 +11,9 @@ namespace YARG_Renderer.Geometry.Shapes
     {
         public Vertex[] Vertices { get; set; }
 
+        public Vector3 MinBound;
+        public Vector3 MaxBound;
+
         public Tri(Vertex[] vertices) : this(vertices, Vector3.One) { }
 
         public Tri(Vertex[] vertices, Vector3 scale) : this(vertices, Vector3.Zero, scale) { }
@@ -84,6 +87,42 @@ namespace YARG_Renderer.Geometry.Shapes
                 (Vector3.Dot(N, Vector3.Cross(v12, v1p)) > 0) &&
                 (Vector3.Dot(N, Vector3.Cross(v02, v2p)) > 0)
             );
+        }
+
+        private void CalculateRoughBounds()
+        {
+            MinBound = Vertices[0].Position;
+            MaxBound = Vertices[0].Position;
+
+            foreach (Vertex v in Vertices)
+            {
+                if (v.Position.X > MaxBound.X)
+                {
+                    MaxBound.X = v.Position.X;
+                }
+                else if (v.Position.X < MinBound.X)
+                {
+                    MinBound.X = v.Position.X;
+                }
+
+                if (v.Position.Y > MaxBound.Y)
+                {
+                    MaxBound.Y = v.Position.Y;
+                }
+                else if (v.Position.Y < MinBound.Y)
+                {
+                    MinBound.Y = v.Position.Y;
+                }
+
+                if (v.Position.Z > MaxBound.Z)
+                {
+                    MaxBound.Z = v.Position.Z;
+                }
+                else if (v.Position.Z < MinBound.Z)
+                {
+                    MinBound.Z = v.Position.Z;
+                }
+            }
         }
     }
 }
