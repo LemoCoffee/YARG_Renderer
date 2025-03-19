@@ -114,7 +114,6 @@ namespace YARG_Renderer
             {
                 case Keys.Q:
                     lookMode = false;
-                    System.Diagnostics.Debug.WriteLine("lookMode false");
                     break;
             }
         }
@@ -133,7 +132,6 @@ namespace YARG_Renderer
                     camera.CurrentShader = (Camera.ShaderMode)shaders.GetValue(newIndex);
                     break;
                 case Keys.Q:
-                    System.Diagnostics.Debug.WriteLine("lookMode true");
                     lookMode = true;
                     break;
                 case Keys.Space:

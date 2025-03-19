@@ -11,8 +11,8 @@ namespace YARG_Renderer.Geometry.Shapes
     {
         public Vertex[] Vertices { get; set; }
 
-        public Vector3 MinBound;
-        public Vector3 MaxBound;
+        private AABB bv;
+        public Vector3 Normal;
 
         public Tri(Vertex[] vertices) : this(vertices, Vector3.One) { }
 
@@ -21,18 +21,26 @@ namespace YARG_Renderer.Geometry.Shapes
         public Tri(Vertex[] vertices, Vector3 origin, Vector3 scale) : base(origin, Quaternion.Identity, scale) 
         {
             Vertices = vertices;
+            bv = AABB.FromVertices(vertices);
+            Normal = GetNormal();
         }
 
         public override bool Intersect(Ray ray, out float t, out Vector3 normal)
         {
-            normal = this.GetNormal();
+        
+            normal = Normal;
             t = -1;
+
+            if (!bv.Intersect(ray))
+            {
+                return false;
+            }
 
             float denom = Vector3.Dot(ray.Direction, normal);
 
             if (Math.Abs(denom) > ray.EPSILON)
             {
-                Vector3 dist = ray.Origin - (GetNormal() * (Vector3.Dot(GetNormal(), Vertices[0].Position)));
+                Vector3 dist = ray.Origin - (normal * (Vector3.Dot(normal, Vertices[0].Position)));
                 t = -Vector3.Dot(dist, normal) / denom;
             }
 
@@ -72,7 +80,7 @@ namespace YARG_Renderer.Geometry.Shapes
         protected bool Inside(Vector3 p)
         {
             Vector3 P = p - Position;
-            Vector3 N = GetNormal();
+            Vector3 N = Normal;
 
             Vector3 v01 = Vertices[1].Position - Vertices[0].Position;
             Vector3 v12 = Vertices[2].Position - Vertices[1].Position;
@@ -89,40 +97,6 @@ namespace YARG_Renderer.Geometry.Shapes
             );
         }
 
-        private void CalculateRoughBounds()
-        {
-            MinBound = Vertices[0].Position;
-            MaxBound = Vertices[0].Position;
-
-            foreach (Vertex v in Vertices)
-            {
-                if (v.Position.X > MaxBound.X)
-                {
-                    MaxBound.X = v.Position.X;
-                }
-                else if (v.Position.X < MinBound.X)
-                {
-                    MinBound.X = v.Position.X;
-                }
-
-                if (v.Position.Y > MaxBound.Y)
-                {
-                    MaxBound.Y = v.Position.Y;
-                }
-                else if (v.Position.Y < MinBound.Y)
-                {
-                    MinBound.Y = v.Position.Y;
-                }
-
-                if (v.Position.Z > MaxBound.Z)
-                {
-                    MaxBound.Z = v.Position.Z;
-                }
-                else if (v.Position.Z < MinBound.Z)
-                {
-                    MinBound.Z = v.Position.Z;
-                }
-            }
-        }
+        
     }
 }
