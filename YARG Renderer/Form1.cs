@@ -24,17 +24,17 @@ namespace YARG_Renderer
         public Color GetColor(Camera camera, Shape shape, Ray ray, float time, Vector3 normal)
         {
             Color pixelColor;
+            Vector3 normalVec;
+            float fogClose = 5;
+            float fogFar = 25;
             switch (camera.CurrentShader)
             {
                 case Camera.ShaderMode.Flat:
                     return shape.Material.Color;
                 case Camera.ShaderMode.YMagnitude:
                     pixelColor = shape.Material.Color;
-                    var normalVec = normal + Vector3.One;
+                    normalVec = normal + Vector3.One;
                     normalVec /= 2;
-                    normalVec.X = 1 - normalVec.X;
-                    normalVec.Y = 1 - normalVec.Y;
-                    normalVec.Z = 1 - normalVec.Z;
                     return Color.FromArgb(255, (byte)(pixelColor.R * normalVec.Y), (byte)(pixelColor.G * normalVec.Y), (byte)(pixelColor.B * normalVec.Y));
                 case Camera.ShaderMode.Magnitude:
                     normal.X = (normal.X + 1) * 128;
@@ -56,6 +56,17 @@ namespace YARG_Renderer
                     byte B = (byte)(mag * pixelColor.B);
                     return Color.FromArgb(255, R, G, B);
                     break;
+                case Camera.ShaderMode.DistanceYMag:
+                    time = (time - fogClose > 0) ? time - fogClose : 0;
+                    time = (time > fogFar) ? fogFar : time;
+                    var Ymag = 1 - (time / fogFar);
+
+                    pixelColor = shape.Material.Color;
+                    normalVec = normal + Vector3.One;
+                    normalVec /= 2;
+
+                    return Color.FromArgb(255, (byte)(pixelColor.R * normalVec.Y * Ymag), (byte)(pixelColor.G * normalVec.Y * Ymag), (byte)(pixelColor.B * normalVec.Y * Ymag));
+                    break;
             }
             return Color.White;
         }
@@ -73,8 +84,8 @@ namespace YARG_Renderer
 
             for (int i = 0; i < contacts.Length; i++)
             {
-                int pX = (i % (int)camera.Resolution.X) * pixelWidth;
-                int pY = (i / (int)camera.Resolution.X) * pixelHeight;
+                int pX = ((contacts.Length - i) % (int)camera.Resolution.X) * pixelWidth;
+                int pY = ((contacts.Length - i) / (int)camera.Resolution.X) * pixelHeight;
 
                 if (contacts[i].Item1 != null && contacts[i].Item2 > 0)
                 {

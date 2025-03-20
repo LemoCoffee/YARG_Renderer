@@ -23,7 +23,7 @@ namespace YARG_Renderer.Geometry
             return output; 
         }
 
-        private static void CalculateRoughBounds(Vertex[] vertices, out Vector3 MinBound, out Vector3 MaxBound)
+        public static void CalculateRoughBounds(Vertex[] vertices, out Vector3 MinBound, out Vector3 MaxBound)
         {
             MinBound = vertices[0].Position;
             MaxBound = vertices[0].Position;

@@ -144,12 +144,12 @@ namespace YARG_Renderer
                         camera.Rotation = Quaternion.Identity;
                     } else
                     {
-                        camera.Position -= Vector3.UnitY;
+                        camera.Position += Vector3.UnitY;
                     }
 
                     break;
                 case Keys.ShiftKey:
-                    camera.Position += Vector3.UnitY;
+                    camera.Position -= Vector3.UnitY;
                     break;
                 case Keys.Left:
                     // Handle Left Arrow key press
@@ -159,8 +159,8 @@ namespace YARG_Renderer
                     }
                     else
                     {
-                        camera.Position += Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
-                        camera.Position -= Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position -= Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position += Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
                     }
                     break;
                 case Keys.Right:
@@ -171,8 +171,8 @@ namespace YARG_Renderer
                     }
                     else
                     {
-                        camera.Position -= Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
-                        camera.Position += Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position += Vector3.UnitZ * (float)Math.Sin(LUtils.ToEulerAngles(camera.Rotation).Y);
+                        camera.Position -= Vector3.UnitX * (float)Math.Cos(LUtils.ToEulerAngles(camera.Rotation).Y);
                     }
                     break;
                 case Keys.Up:

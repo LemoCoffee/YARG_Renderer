@@ -23,6 +23,7 @@ namespace YARG_Renderer.Geometry
             Magnitude,
             YMagnitude,
             Distance,
+            DistanceYMag,
         }
 
         public ShaderMode CurrentShader = ShaderMode.YMagnitude;
