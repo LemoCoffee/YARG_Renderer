@@ -9,9 +9,7 @@ namespace YARG_Renderer.Geometry
 {
     public class Vertex
     {
-        private Vector3 _position;
-
-        public ref Vector3 Position => ref _position;
+        public Vector3 Position { get; set; }
 
         public Vertex(Vector3 position)
         {

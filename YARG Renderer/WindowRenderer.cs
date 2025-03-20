@@ -64,10 +64,10 @@ namespace YARG_Renderer
                         switch (mapMode)
                         {
                             case (0):
-                                Window.RenderXZ(Camera, World.geometry, g);
+                                Window.Render2D(Camera, World.geometry, g, 'X', 'Z');
                                 break;
                             case (1):
-                                Window.RenderXY(Camera, World.geometry, g);
+                                Window.Render2D(Camera, World.geometry, g, 'X', 'Y');
                                 break;
                         }
                         

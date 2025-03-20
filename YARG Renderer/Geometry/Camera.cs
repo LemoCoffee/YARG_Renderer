@@ -90,19 +90,19 @@ namespace YARG_Renderer.Geometry
 
             (Shape, float, Vector3)[] contacts = new (Shape, float, Vector3)[(int)Resolution.X * (int)Resolution.Y];
 
-            for (int i = 0; i < Rays.Length; i++)
+            Parallel.For(0, Rays.Length, i =>
             {
                 float minT = float.MaxValue;
                 foreach (Shape s in geometry)
                 {
-                    
+
                     if (Rays[i].Intersect(s, out float t, out Vector3 normal) && t < minT)
                     {
                         contacts[i] = (s, t, normal);
                         minT = t;
                     }
                 }
-            }
+            });
 
             return contacts;
         }
