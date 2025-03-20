@@ -11,7 +11,6 @@ namespace YARG_Renderer.Geometry.Shapes
     {
         public Vertex[] Vertices { get; set; }
 
-        private AABB bv;
         public Vector3 Normal;
 
         public Tri(Vertex[] vertices) : this(vertices, Vector3.One) { }
@@ -21,7 +20,6 @@ namespace YARG_Renderer.Geometry.Shapes
         public Tri(Vertex[] vertices, Vector3 origin, Vector3 scale) : base(origin, Quaternion.Identity, scale) 
         {
             Vertices = vertices;
-            bv = AABB.FromVertices(vertices);
             Normal = GetNormal();
         }
 
@@ -30,11 +28,6 @@ namespace YARG_Renderer.Geometry.Shapes
         
             normal = Normal;
             t = -1;
-
-            if (!bv.Intersect(ray))
-            {
-                return false;
-            }
 
             float denom = Vector3.Dot(ray.Direction, normal);
 
