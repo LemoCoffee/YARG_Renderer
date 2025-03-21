@@ -20,7 +20,7 @@ namespace YARG_Renderer.Geometry.Shapes
 
             float denom = Vector3.Dot(ray.Direction, Normal);
 
-            if (Math.Abs(denom) > ray.EPSILON)
+            if (Math.Abs(denom) > Ray.EPSILON)
             {
                 Vector3 dist = ray.Origin - this.Position;
                 t = -Vector3.Dot(dist, normal) / denom;
