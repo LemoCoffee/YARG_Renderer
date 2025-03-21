@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace YARG_Renderer.Geometry
 {
@@ -12,7 +7,7 @@ namespace YARG_Renderer.Geometry
         public Vector3 MinimumBound;
         public Vector3 MaximumBound;
 
-        public static AABB FromVertices(Vertex[] vertices) 
+        public static AABB FromVertices(Vertex[] vertices)
         {
             AABB output = new AABB();
 
@@ -20,7 +15,7 @@ namespace YARG_Renderer.Geometry
             output.MinimumBound = minBound;
             output.MaximumBound = maxBound;
 
-            return output; 
+            return output;
         }
 
         public static void CalculateRoughBounds(Vertex[] vertices, out Vector3 MinBound, out Vector3 MaxBound)

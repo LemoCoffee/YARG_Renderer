@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Numerics;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace YARG_Renderer.Geometry
 {
@@ -11,7 +6,7 @@ namespace YARG_Renderer.Geometry
     {
         public Vector3 Origin { get; set; }
         public Vector3 Direction { get; set; }
-        public double EPSILON { get => 0.000001; }
+        public static double EPSILON { get => 0.000001; }
 
         public Ray(Vector3 origin, Vector3 direction)
         {

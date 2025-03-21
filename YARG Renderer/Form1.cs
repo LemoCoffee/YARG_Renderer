@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Numerics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using YARG_Renderer.Geometry;
 using YARG_Renderer.Geometry.Shapes;
@@ -118,6 +113,14 @@ namespace YARG_Renderer
                 g.DrawLine(redPen, -1000, 0, 1000, 0);
                 g.DrawLine(axisPen, 0, -1000, 0, 1000);
 
+                g.DrawEllipse(objectPen, camera.Position.X - 2, camera.Position.Y - 2, 4, 4);
+
+                // Draw camera direction line
+                Vector3 direction = Vector3.Transform(new Vector3(0, 0, -1), camera.Rotation);
+                float dirX = GetAxisValue(direction, axis1) * 10;
+                float dirY = GetAxisValue(direction, axis2) * 10;
+                g.DrawLine(objectPen, camera.Position.X, camera.Position.Y, camera.Position.X + dirX, camera.Position.Y + dirY);
+
                 foreach (Shape shape in geometry)
                 {
                     float x = GetAxisValue(shape.Position, axis1);
@@ -141,6 +144,8 @@ namespace YARG_Renderer
                 case ('Z'):
                     return vector.Z;
             }
+
+            System.Diagnostics.Debug.WriteLine("Invalid axis '" + axis + "'");
 
             return 0;
         }

@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="Geometry\AABB.cs" />
     <Compile Include="Geometry\Camera.cs" />
+    <Compile Include="Geometry\Face.cs" />
     <Compile Include="Geometry\Material.cs" />
     <Compile Include="Geometry\Ray.cs" />
     <Compile Include="Geometry\Shapes\Mesh.cs" />

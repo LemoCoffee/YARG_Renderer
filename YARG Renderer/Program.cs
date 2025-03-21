@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Numerics;
 using System.Drawing;
-using System.Threading;
+using System.IO;
+using System.Numerics;
 using System.Windows.Forms;
 using YARG_Renderer.Geometry;
 using YARG_Renderer.Geometry.Shapes;
-using Plane = YARG_Renderer.Geometry.Shapes.Plane;
-using System.IO;
 
 namespace YARG_Renderer
 {
@@ -43,7 +38,7 @@ namespace YARG_Renderer
 
             System.Diagnostics.Debug.WriteLine("Starting...");
             Application.Run(window);
-          
+
         }
 
         #region Initialization
@@ -67,7 +62,7 @@ namespace YARG_Renderer
             Material gold = new Material().SetColor(Color.Gold);
             Material darn = new Material().SetColor(Color.FromArgb(255, 31, 30, 51));
             world = new World();
-            
+
             String suzanne = Path.Combine(Directory.GetCurrentDirectory(), "suzanne.obj");
             world.geometry.Add(new Mesh(new Vector3(0, 0, 0), Quaternion.Identity, Vector3.One, suzanne).SetMaterial(lime));
         }

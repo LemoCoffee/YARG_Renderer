@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+﻿using System.Drawing;
 using YARG_Renderer.Geometry;
-using System.Numerics;
 
 namespace YARG_Renderer
 {
@@ -22,12 +14,12 @@ namespace YARG_Renderer
         private int _mapMode = 0;
         public int mapMode { get => _mapMode; set => _mapMode = value % 2; }
 
-        public WindowRenderer (ref Form1 _window, ref World _world)
+        public WindowRenderer(ref Form1 _window, ref World _world)
         {
             Init(ref _window, ref _world);
         }
 
-        protected void Init (ref Form1 _window, ref World _world)
+        protected void Init(ref Form1 _window, ref World _world)
         {
             this.Window = _window;
             this.World = _world;
@@ -40,7 +32,7 @@ namespace YARG_Renderer
             return this;
         }
 
-        public void Update ()
+        public void Update()
         {
             if (Window.IsHandleCreated)
             {
@@ -50,14 +42,12 @@ namespace YARG_Renderer
             }
         }
 
-        public void RenderFrameMethod ()
+        public void RenderFrameMethod()
         {
             if (!Window.IsDisposed)
             {
-                //((Geometry.Shapes.Tri)World.geometry[3]).Vertices[1].Position += Vector3.UnitX * 0.1f;
                 using (Graphics g = Graphics.FromImage(buffer))
                 {
-
                     if (renderMap)
                     {
                         g.Clear(Color.White);
@@ -70,12 +60,12 @@ namespace YARG_Renderer
                                 Window.Render2D(Camera, World.geometry, g, 'X', 'Y');
                                 break;
                         }
-                        
+
                     }
                     else
                     {
                         g.Clear(Color.Black);
-                        
+
                         Window.Render(Camera, World.geometry, g);
                     }
                 }
@@ -84,7 +74,7 @@ namespace YARG_Renderer
             }
         }
 
-        public Bitmap GetBuffer ()
+        public Bitmap GetBuffer()
         {
             return buffer;
         }

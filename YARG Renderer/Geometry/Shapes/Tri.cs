@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YARG_Renderer.Geometry.Shapes
 {
@@ -17,7 +13,7 @@ namespace YARG_Renderer.Geometry.Shapes
 
         public Tri(Vertex[] vertices, Vector3 scale) : this(vertices, Vector3.Zero, scale) { }
 
-        public Tri(Vertex[] vertices, Vector3 origin, Vector3 scale) : base(origin, Quaternion.Identity, scale) 
+        public Tri(Vertex[] vertices, Vector3 origin, Vector3 scale) : base(origin, Quaternion.Identity, scale)
         {
             Vertices = vertices;
             Normal = GetNormal();
@@ -25,7 +21,7 @@ namespace YARG_Renderer.Geometry.Shapes
 
         public override bool Intersect(Ray ray, out float t, out Vector3 normal)
         {
-        
+
             normal = Normal;
             t = -1;
 
@@ -90,6 +86,6 @@ namespace YARG_Renderer.Geometry.Shapes
             );
         }
 
-        
+
     }
 }

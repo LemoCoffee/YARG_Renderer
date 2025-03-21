@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 using YARG_Renderer.Geometry.Shapes;
 
@@ -29,8 +27,8 @@ namespace YARG_Renderer.Geometry
         public ShaderMode CurrentShader = ShaderMode.YMagnitude;
 
         public Ray[] Rays;
-        
-        public Camera (Vector3 position, Quaternion rotation, float horizontalFOV, float verticalFOV)
+
+        public Camera(Vector3 position, Quaternion rotation, float horizontalFOV, float verticalFOV)
         {
             this.Position = position;
             //this.Rotation = LUtils.ToQuaternion(LUtils.ToEulerAngles(rotation) + new Vector3(0, (float)(-Math.PI/4), 0));
@@ -44,7 +42,7 @@ namespace YARG_Renderer.Geometry
         }
 
         // Repopulate the rays array with new rays
-        public void RegenerateRays ()
+        public void RegenerateRays()
         {
 
             double dYaw = HorizontalFOV / Resolution.X;
@@ -74,7 +72,7 @@ namespace YARG_Renderer.Geometry
                     float dz = (float)(Math.Cos(rayAngle) * depth);
 
                     float x = (float)(Math.Sin(rayAngle) * sliceDepth);
-                    float z = (float)(Math.Cos(rayAngle) * sliceDepth);                    
+                    float z = (float)(Math.Cos(rayAngle) * sliceDepth);
 
                     Vector3 direction = new Vector3(dx, y, dz);
                     Vector3 origin = /*new Vector3(x, 0, z) + */Position;
@@ -84,7 +82,7 @@ namespace YARG_Renderer.Geometry
             }
         }
 
-        public (Shape, float, Vector3)[] CastRays (List<Shape> geometry)
+        public (Shape, float, Vector3)[] CastRays(List<Shape> geometry)
         {
             RegenerateRays();
 

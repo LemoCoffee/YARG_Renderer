@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YARG_Renderer.Geometry.Shapes
 {
     class Mesh : Shape
     {
         public List<Vertex> Vertices;
-        public List<Tri> Faces;
+        public List<Face> Faces;
 
         public Vector3 MinBound;
         public Vector3 MaxBound;
@@ -35,22 +32,16 @@ namespace YARG_Renderer.Geometry.Shapes
 
             for (int i = 1; i < Faces.Count; i++)
             {
-                //System.Diagnostics.Debug.WriteLine("Face: " + i + "/" + Faces.Count);
+                Face face = Faces[i];
 
-                Tri face = Faces[i];
-                Vector3 v0 = face.Vertices[0].Position;
-                Vector3 v1 = face.Vertices[1].Position;
-                Vector3 v2 = face.Vertices[2].Position;
-
-                
-
-                if (face.Intersect(ray, out float tTemp, out Vector3 normalTemp) && tTemp < t)
+                if (face.Intersect(Vertices, ray, out float tTemp) && tTemp < t)
                 {
                     t = tTemp;
-                    normal = normalTemp;
+                    normal = face.Normal;
                     isect = true;
                 }
             }
+
 
             return isect;
         }
@@ -93,7 +84,7 @@ namespace YARG_Renderer.Geometry.Shapes
             return true;
         }
 
-        private void CalculateRoughBounds ()
+        private void CalculateRoughBounds()
         {
             MinBound = Vertices[0].Position;
             MaxBound = Vertices[0].Position;
@@ -103,7 +94,7 @@ namespace YARG_Renderer.Geometry.Shapes
                 if (v.Position.X > MaxBound.X)
                 {
                     MaxBound.X = v.Position.X;
-                } 
+                }
                 else if (v.Position.X < MinBound.X)
                 {
                     MinBound.X = v.Position.X;
@@ -128,17 +119,20 @@ namespace YARG_Renderer.Geometry.Shapes
                 }
             }
         }
-        
-        private void ParseOBJ (String path)
+
+        private void ParseOBJ(String path)
         {
             String[] lines = File.ReadAllLines(path);
 
-            Vertices = new List<Vertex>();
-            Vertices.Add(new Vertex(Vector3.Zero));
+            Vertices = new List<Vertex>()
+            {
+                new Vertex(Vector3.Zero)
+            };
 
-            Vertex[] trashTriVertices = { Vertices[0], Vertices[0], Vertices[0] };
-            Faces = new List<Tri>();
-            Faces.Add(new Tri(trashTriVertices));
+            Faces = new List<Face>
+            {
+                new Face(Vertices, 0, 0, 0)
+            };
 
             foreach (String line in lines)
             {
@@ -152,12 +146,11 @@ namespace YARG_Renderer.Geometry.Shapes
                         break;
                     case ("f"):  // Face
 
-                        int[] v1 = Array.ConvertAll(terms[1].Split('/'), s => int.Parse(s));
-                        int[] v2 = Array.ConvertAll(terms[2].Split('/'), s => int.Parse(s));
-                        int[] v3 = Array.ConvertAll(terms[3].Split('/'), s => int.Parse(s));
+                        ushort[] v1 = Array.ConvertAll(terms[1].Split('/'), s => ushort.Parse(s));
+                        ushort[] v2 = Array.ConvertAll(terms[2].Split('/'), s => ushort.Parse(s));
+                        ushort[] v3 = Array.ConvertAll(terms[3].Split('/'), s => ushort.Parse(s));
 
-                        Vertex[] v = { Vertices[v1[0]], Vertices[v2[0]], Vertices[v3[0]] };
-                        Faces.Add(new Tri(v, this.Position, Vector3.One));
+                        Faces.Add(new Face(Vertices, v1[0], v2[0], v3[0]));
 
                         break;
                     case ("vt"): // Texture coordinate
