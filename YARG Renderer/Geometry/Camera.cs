@@ -15,6 +15,12 @@ namespace YARG_Renderer.Geometry
         public Vector3 Position { get; set; }
         public Quaternion Rotation { get; set; }
 
+        private int _renderTime = DateTime.MinValue.Millisecond;
+        private int _tris = 969;
+        private int _rayCount = 0;
+        private int _rayTriTests = 0;
+        private int _rayTriIntersects = 0;
+
         public enum ShaderMode
         {
             Flat,
@@ -82,9 +88,27 @@ namespace YARG_Renderer.Geometry
             }
         }
 
-        public (Shape, float, Vector3)[] CastRays(List<Shape> geometry)
+        public (Shape, float, Vector3)[] CastRays(List<Shape> geometry, bool debug = true)
         {
+            if (debug)
+            {
+                _renderTime = DateTime.Now.Millisecond;
+                /*_tris = 0;
+                foreach (Shape s in geometry)
+                {
+                    if (s.GetType() == typeof(Mesh))
+                    {
+                        _tris += ((Mesh)(s)).Faces.Count;
+                    }
+                }*/
+                _rayCount = 0;
+                _rayTriTests = 0;
+                _rayTriIntersects = 0;
+            }
+
             RegenerateRays();
+
+            _rayCount = Rays.Length;
 
             (Shape, float, Vector3)[] contacts = new (Shape, float, Vector3)[(int)Resolution.X * (int)Resolution.Y];
 
@@ -93,16 +117,35 @@ namespace YARG_Renderer.Geometry
                 float minT = float.MaxValue;
                 foreach (Shape s in geometry)
                 {
-
+                    _rayTriTests++;
                     if (Rays[i].Intersect(s, out float t, out Vector3 normal) && t < minT)
                     {
                         contacts[i] = (s, t, normal);
                         minT = t;
+                        _rayTriIntersects++;
                     }
                 }
             });
 
+            if (debug)
+            {
+                _renderTime = DateTime.Now.Millisecond - _renderTime;
+            }
+
             return contacts;
+        }
+
+        public String[] RenderStats()
+        {
+            String[] output = new String[5];
+
+            output[0] = String.Format($"Render time: {_renderTime}ms");
+            output[1] = String.Format($"Total Tris: {_tris}");
+            output[2] = String.Format($"Total Rays: {_rayCount}");
+            output[3] = String.Format($"Ray-Tri Tests: {_rayTriTests}");
+            output[4] = String.Format($"Ray-Tri Contacts: {_rayTriIntersects}");
+
+            return output;
         }
     }
 }

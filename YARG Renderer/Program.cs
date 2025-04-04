@@ -32,7 +32,7 @@ namespace YARG_Renderer
             renderer = new WindowRenderer(ref window, ref world).SetCamera(camera);
 
             RenderClock = new System.Windows.Forms.Timer();
-            RenderClock.Interval = 1; // Set the interval to 1 second (1000 ms)
+            RenderClock.Interval = 1000; // Set the interval to 1 second (1000 ms)
             RenderClock.Tick += (sender, e) => renderer.Update();
             RenderClock.Start();
 

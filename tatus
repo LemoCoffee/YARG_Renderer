@@ -1,0 +1,272 @@
+[1mdiff --git a/YARG Renderer/Form1.cs b/YARG Renderer/Form1.cs[m
+[1mindex 3bc860f..feb6de9 100644[m
+[1m--- a/YARG Renderer/Form1.cs[m	
+[1m+++ b/YARG Renderer/Form1.cs[m	
+[36m@@ -75,7 +75,7 @@[m [mnamespace YARG_Renderer[m
+             int pixelWidth = this.Width / (int)camera.Resolution.X;[m
+             int pixelHeight = this.Height / (int)camera.Resolution.Y;[m
+             pixelHeight = pixelWidth;[m
+[31m-[m
+[32m+[m[41m            [m
+             using (SolidBrush brush = new SolidBrush(Color.Black))[m
+             {[m
+                 for (int i = 0; i < contacts.Length; i++)[m
+[36m@@ -96,6 +96,8 @@[m [mnamespace YARG_Renderer[m
+                 }[m
+             }[m
+ [m
+[32m+[m[32m            RenderFrameStats(camera, g);[m
+[32m+[m
+             return true;[m
+         }[m
+ [m
+[36m@@ -133,6 +135,19 @@[m [mnamespace YARG_Renderer[m
+             return true;[m
+         }[m
+ [m
+[32m+[m[32m        public bool RenderFrameStats(Camera camera, Graphics g)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            String[] stats = camera.RenderStats();[m
+[32m+[m
+[32m+[m[32m            int textHeight = 10;[m
+[32m+[m
+[32m+[m[32m            for (int i = 0; i < stats.Length; i++)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                TextRenderer.DrawText(g, stats[i], this.Font, new Point(0, (this.Height - (textHeight * (i +6)))), Color.White);[m
+[32m+[m[32m            }[m
+[32m+[m[32m            return true;[m
+[32m+[m[32m        }[m
+[32m+[m
+         private float GetAxisValue(Vector3 vector, char axis)[m
+         {[m
+             switch (axis)[m
+[1mdiff --git a/YARG Renderer/Geometry/Camera.cs b/YARG Renderer/Geometry/Camera.cs[m
+[1mindex 998338f..fc2cd9b 100644[m
+[1m--- a/YARG Renderer/Geometry/Camera.cs[m	
+[1m+++ b/YARG Renderer/Geometry/Camera.cs[m	
+[36m@@ -15,6 +15,12 @@[m [mnamespace YARG_Renderer.Geometry[m
+         public Vector3 Position { get; set; }[m
+         public Quaternion Rotation { get; set; }[m
+ [m
+[32m+[m[32m        private int _renderTime = DateTime.MinValue.Millisecond;[m
+[32m+[m[32m        private int _tris = 969;[m
+[32m+[m[32m        private int _rayCount = 0;[m
+[32m+[m[32m        private int _rayTriTests = 0;[m
+[32m+[m[32m        private int _rayTriIntersects = 0;[m
+[32m+[m
+         public enum ShaderMode[m
+         {[m
+             Flat,[m
+[36m@@ -82,10 +88,28 @@[m [mnamespace YARG_Renderer.Geometry[m
+             }[m
+         }[m
+ [m
+[31m-        public (Shape, float, Vector3)[] CastRays(List<Shape> geometry)[m
+[32m+[m[32m        public (Shape, float, Vector3)[] CastRays(List<Shape> geometry, bool debug = true)[m
+         {[m
+[32m+[m[32m            if (debug)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                _renderTime = DateTime.Now.Millisecond;[m
+[32m+[m[32m                /*_tris = 0;[m
+[32m+[m[32m                foreach (Shape s in geometry)[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    if (s.GetType() == typeof(Mesh))[m
+[32m+[m[32m                    {[m
+[32m+[m[32m                        _tris += ((Mesh)(s)).Faces.Count;[m
+[32m+[m[32m                    }[m
+[32m+[m[32m                }*/[m
+[32m+[m[32m                _rayCount = 0;[m
+[32m+[m[32m                _rayTriTests = 0;[m
+[32m+[m[32m                _rayTriIntersects = 0;[m
+[32m+[m[32m            }[m
+[32m+[m
+             RegenerateRays();[m
+ [m
+[32m+[m[32m            _rayCount = Rays.Length;[m
+[32m+[m
+             (Shape, float, Vector3)[] contacts = new (Shape, float, Vector3)[(int)Resolution.X * (int)Resolution.Y];[m
+ [m
+             Parallel.For(0, Rays.Length, i =>[m
+[36m@@ -93,16 +117,35 @@[m [mnamespace YARG_Renderer.Geometry[m
+                 float minT = float.MaxValue;[m
+                 foreach (Shape s in geometry)[m
+                 {[m
+[31m-[m
+[32m+[m[32m                    _rayTriTests++;[m
+                     if (Rays[i].Intersect(s, out float t, out Vector3 normal) && t < minT)[m
+                     {[m
+                         contacts[i] = (s, t, normal);[m
+                         minT = t;[m
+[32m+[m[32m                        _rayTriIntersects++;[m
+                     }[m
+                 }[m
+             });[m
+ [m
+[32m+[m[32m            if (debug)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                _renderTime = DateTime.Now.Millisecond - _renderTime;[m
+[32m+[m[32m            }[m
+[32m+[m
+             return contacts;[m
+         }[m
+[32m+[m
+[32m+[m[32m        public String[] RenderStats()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            String[] output = new String[5];[m
+[32m+[m
+[32m+[m[32m            output[0] = String.Format($"Render time: {_renderTime}ms");[m
+[32m+[m[32m            output[1] = String.Format($"Total Tris: {_tris}");[m
+[32m+[m[32m            output[2] = String.Format($"Total Rays: {_rayCount}");[m
+[32m+[m[32m            output[3] = String.Format($"Ray-Tri Tests: {_rayTriTests}");[m
+[32m+[m[32m            output[4] = String.Format($"Ray-Tri Contacts: {_rayTriIntersects}");[m
+[32m+[m
+[32m+[m[32m            return output;[m
+[32m+[m[32m        }[m
+     }[m
+ }[m
+[1mdiff --git a/YARG Renderer/Geometry/Face.cs b/YARG Renderer/Geometry/Face.cs[m
+[1mindex f86ec27..809e7fd 100644[m
+[1m--- a/YARG Renderer/Geometry/Face.cs[m	
+[1m+++ b/YARG Renderer/Geometry/Face.cs[m	
+[36m@@ -6,45 +6,57 @@[m [mnamespace YARG_Renderer.Geometry[m
+ {[m
+     public struct Face[m
+     {[m
+[32m+[m[32m        public Vector3 Normal;[m
+[32m+[m[32m        public ushort VertexA;[m
+[32m+[m[32m        public ushort VertexB;[m
+[32m+[m[32m        public ushort VertexC;[m
+[32m+[m[32m        public ushort VertexD;[m
+[32m+[m
+         public Face(List<Vertex> vertices, ushort vertexA, ushort vertexB, ushort vertexC)[m
+         {[m
+             VertexA = vertexA;[m
+             VertexB = vertexB;[m
+             VertexC = vertexC;[m
+[32m+[m[32m            VertexD = 0; // Allow for quads in the future[m
+ [m
+[31m-            Normal = GetNormal(vertices, vertexA, vertexB, vertexC);[m
+[32m+[m[32m            Normal = GetNormal(vertices, vertexA, vertexB, vertexC, 0);[m
+         }[m
+ [m
+[31m-        public Vector3 Normal;[m
+[31m-        public ushort VertexA;[m
+[31m-        public ushort VertexB;[m
+[31m-        public ushort VertexC;[m
+[31m-[m
+         public static Vector3 GetNormal(List<Vertex> v, Face f)[m
+         {[m
+[31m-            return GetNormal(v, f.VertexA, f.VertexB, f.VertexC);[m
+[32m+[m[32m            return GetNormal(v, f.VertexA, f.VertexB, f.VertexC, f.VertexD);[m
+         }[m
+ [m
+[31m-        public static Vector3 GetNormal(List<Vertex> vertices, ushort a, ushort b, ushort c)[m
+[32m+[m[32m        public static Vector3 GetNormal(List<Vertex> vertices, ushort a, ushort b, ushort c, ushort d)[m
+         {[m
+             Vector3[] localVerts = new Vector3[] { vertices[a].Position - vertices[a].Position, vertices[b].Position - vertices[a].Position, vertices[c].Position - vertices[a].Position };[m
+             Vector3 normal = Vector3.Zero;[m
+ [m
+[31m-            for (int i = 0; i < localVerts.Length; i++)[m
+[32m+[m[32m            if (d == 0) // Quad normal[m
+             {[m
+[31m-                Vector3 vc = localVerts[i];[m
+[31m-                Vector3 vn = localVerts[(i + 1) % localVerts.Length];[m
+[32m+[m[32m                for (int i = 0; i < localVerts.Length; i++)[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Vector3 vc = localVerts[i];[m
+[32m+[m[32m                    Vector3 vn = localVerts[(i + 1) % localVerts.Length];[m
+[32m+[m
+[32m+[m[32m                    normal.X += (vc.Y - vn.Y) * (vc.Z + vn.Z);[m
+[32m+[m[32m                    normal.Y += (vc.Z - vn.Z) * (vc.X + vn.X);[m
+[32m+[m[32m                    normal.Z += (vc.X - vn.X) * (vc.Y + vn.Y);[m
+[32m+[m[32m                }[m
+ [m
+[31m-                normal.X += (vc.Y - vn.Y) * (vc.Z + vn.Z);[m
+[31m-                normal.Y += (vc.Z - vn.Z) * (vc.X + vn.X);[m
+[31m-                normal.Z += (vc.X - vn.X) * (vc.Y + vn.Y);[m
+[32m+[m[32m                return Vector3.Normalize(normal);[m
+             }[m
+ [m
+[31m-            return Vector3.Normalize(normal);[m
+[32m+[m[32m            // Tri normal[m
+[32m+[m[32m            return new Vector3([m
+[32m+[m[32m                localVerts[1].Y * localVerts[2].Z - localVerts[1].Z * localVerts[2].Y,[m
+[32m+[m[32m                localVerts[1].Z * localVerts[2].X - localVerts[1].X * localVerts[2].Z,[m
+[32m+[m[32m                localVerts[1].X * localVerts[2].Y - localVerts[1].Y * localVerts[2].X);[m
+         }[m
+ [m
+         public bool Inside(Vector3 p, List<Vertex> vertices)[m
+         {[m
+[32m+[m[32m            // Barycentric coordinate test[m
+             Vector3 v01 = vertices[VertexB].Position - vertices[VertexA].Position;[m
+             Vector3 v12 = vertices[VertexC].Position - vertices[VertexB].Position;[m
+             Vector3 v02 = vertices[VertexA].Position - vertices[VertexC].Position;[m
+[1mdiff --git a/YARG Renderer/Program.cs b/YARG Renderer/Program.cs[m
+[1mindex f5fe020..57ca134 100644[m
+[1m--- a/YARG Renderer/Program.cs[m	
+[1m+++ b/YARG Renderer/Program.cs[m	
+[36m@@ -32,7 +32,7 @@[m [mnamespace YARG_Renderer[m
+             renderer = new WindowRenderer(ref window, ref world).SetCamera(camera);[m
+ [m
+             RenderClock = new System.Windows.Forms.Timer();[m
+[31m-            RenderClock.Interval = 1; // Set the interval to 1 second (1000 ms)[m
+[32m+[m[32m            RenderClock.Interval = 1000; // Set the interval to 1 second (1000 ms)[m
+             RenderClock.Tick += (sender, e) => renderer.Update();[m
+             RenderClock.Start();[m
+ [m
+[1mdiff --git a/YARG Renderer/WindowRenderer.cs b/YARG Renderer/WindowRenderer.cs[m
+[1mindex 1be400b..70b2eda 100644[m
+[1m--- a/YARG Renderer/WindowRenderer.cs[m	
+[1m+++ b/YARG Renderer/WindowRenderer.cs[m	
+[36m@@ -1,4 +1,6 @@[m
+[31m-﻿using System.Drawing;[m
+[32m+[m[32m﻿using System;[m
+[32m+[m[32musing System.Drawing;[m
+[32m+[m[32musing System.Windows.Forms;[m
+ using YARG_Renderer.Geometry;[m
+ [m
+ namespace YARG_Renderer[m
+[36m@@ -8,7 +10,8 @@[m [mnamespace YARG_Renderer[m
+         Form1 Window;[m
+         Camera Camera;[m
+         World World;[m
+[31m-        public Bitmap buffer;[m
+[32m+[m[32m        public Bitmap Buffer;[m
+[32m+[m[32m        public bool DebugStats = true;[m
+         public delegate void RenderFrame();[m
+         public bool renderMap = false;[m
+         private int _mapMode = 0;[m
+[36m@@ -23,7 +26,7 @@[m [mnamespace YARG_Renderer[m
+         {[m
+             this.Window = _window;[m
+             this.World = _world;[m
+[31m-            this.buffer = new Bitmap(Window.ClientSize.Width, Window.ClientSize.Height);[m
+[32m+[m[32m            this.Buffer = new Bitmap(Window.ClientSize.Width, Window.ClientSize.Height);[m
+         }[m
+ [m
+         public WindowRenderer SetCamera(Camera _camera)[m
+[36m@@ -46,7 +49,7 @@[m [mnamespace YARG_Renderer[m
+         {[m
+             if (!Window.IsDisposed)[m
+             {[m
+[31m-                using (Graphics g = Graphics.FromImage(buffer))[m
+[32m+[m[32m                using (Graphics g = Graphics.FromImage(Buffer))[m
+                 {[m
+                     if (renderMap)[m
+                     {[m
+[36m@@ -70,13 +73,13 @@[m [mnamespace YARG_Renderer[m
+                     }[m
+                 }[m
+ [m
+[31m-                Window.CreateGraphics().DrawImage(buffer, 0, 0);[m
+[32m+[m[32m                Window.CreateGraphics().DrawImage(Buffer, 0, 0);[m
+             }[m
+         }[m
+ [m
+         public Bitmap GetBuffer()[m
+         {[m
+[31m-            return buffer;[m
+[32m+[m[32m            return Buffer;[m
+         }[m
+     }[m
+ }[m

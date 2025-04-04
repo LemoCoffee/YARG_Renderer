@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
 using YARG_Renderer.Geometry;
 
 namespace YARG_Renderer
@@ -8,7 +10,8 @@ namespace YARG_Renderer
         Form1 Window;
         Camera Camera;
         World World;
-        public Bitmap buffer;
+        public Bitmap Buffer;
+        public bool DebugStats = true;
         public delegate void RenderFrame();
         public bool renderMap = false;
         private int _mapMode = 0;
@@ -23,7 +26,7 @@ namespace YARG_Renderer
         {
             this.Window = _window;
             this.World = _world;
-            this.buffer = new Bitmap(Window.ClientSize.Width, Window.ClientSize.Height);
+            this.Buffer = new Bitmap(Window.ClientSize.Width, Window.ClientSize.Height);
         }
 
         public WindowRenderer SetCamera(Camera _camera)
@@ -46,7 +49,7 @@ namespace YARG_Renderer
         {
             if (!Window.IsDisposed)
             {
-                using (Graphics g = Graphics.FromImage(buffer))
+                using (Graphics g = Graphics.FromImage(Buffer))
                 {
                     if (renderMap)
                     {
@@ -70,13 +73,13 @@ namespace YARG_Renderer
                     }
                 }
 
-                Window.CreateGraphics().DrawImage(buffer, 0, 0);
+                Window.CreateGraphics().DrawImage(Buffer, 0, 0);
             }
         }
 
         public Bitmap GetBuffer()
         {
-            return buffer;
+            return Buffer;
         }
     }
 }

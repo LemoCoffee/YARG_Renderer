@@ -75,7 +75,7 @@ namespace YARG_Renderer
             int pixelWidth = this.Width / (int)camera.Resolution.X;
             int pixelHeight = this.Height / (int)camera.Resolution.Y;
             pixelHeight = pixelWidth;
-
+            
             using (SolidBrush brush = new SolidBrush(Color.Black))
             {
                 for (int i = 0; i < contacts.Length; i++)
@@ -95,6 +95,8 @@ namespace YARG_Renderer
                     g.FillRectangle(brush, pX, pY, pixelWidth, pixelHeight);
                 }
             }
+
+            RenderFrameStats(camera, g);
 
             return true;
         }
@@ -129,6 +131,19 @@ namespace YARG_Renderer
                     float scaleY = GetAxisValue(shape.Scale, axis2);
                     g.DrawEllipse(objectPen, x - (scaleX / 2), y - (scaleY / 2), scaleX, scaleY);
                 }
+            }
+            return true;
+        }
+
+        public bool RenderFrameStats(Camera camera, Graphics g)
+        {
+            String[] stats = camera.RenderStats();
+
+            int textHeight = 10;
+
+            for (int i = 0; i < stats.Length; i++)
+            {
+                TextRenderer.DrawText(g, stats[i], this.Font, new Point(0, (this.Height - (textHeight * (i +6)))), Color.White);
             }
             return true;
         }
