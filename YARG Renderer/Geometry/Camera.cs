@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using YARG_Renderer.Geometry.Shapes;
+using ComputeSharp;
 
 namespace YARG_Renderer.Geometry
 {
@@ -88,7 +89,7 @@ namespace YARG_Renderer.Geometry
             }
         }
 
-        public (Shape, float, Vector3)[] CastRays(List<Shape> geometry, bool debug = true)
+        public (Shape, float, Vector3)[] CastRays(World world, bool debug = true)
         {
             if (debug)
             {
@@ -112,10 +113,13 @@ namespace YARG_Renderer.Geometry
 
             (Shape, float, Vector3)[] contacts = new (Shape, float, Vector3)[(int)Resolution.X * (int)Resolution.Y];
 
-            Parallel.For(0, Rays.Length, i =>
+            using ReadOnlyBuffer<Ray> rayBuffer = GraphicsDevice.GetDefault().AllocateReadOnlyBuffer(Rays);
+            using ReadOnlyBuffer<Face> faceBuffer = GraphicsDevice.GetDefault().AllocateReadOnlyBuffer(world.Faces);
+
+            /*Parallel.For(0, Rays.Length, i =>
             {
                 float minT = float.MaxValue;
-                foreach (Shape s in geometry)
+                foreach (Shape s in world.geometry)
                 {
                     _rayTriTests++;
                     if (Rays[i].Intersect(s, out float t, out Vector3 normal) && t < minT)
@@ -125,7 +129,7 @@ namespace YARG_Renderer.Geometry
                         _rayTriIntersects++;
                     }
                 }
-            });
+            });*/
 
             if (debug)
             {
@@ -133,6 +137,16 @@ namespace YARG_Renderer.Geometry
             }
 
             return contacts;
+        }
+
+        [ThreadGroupSize(DefaultThreadGroupSizes.X)]
+        [GeneratedComputeShaderDescriptor]
+        public readonly partial struct RayFaceItersectShader(ReadOnlyBuffer<Ray> rays, ReadOnlyBuffer<Face> faces, ReadWriteBuffer<float> intersects) : IComputeShader
+        {
+            public void Execute()
+            {
+                intersects[ThreadIds.X] = faces[ThreadIds.X].Intersect();
+            }
         }
 
         public String[] RenderStats()

@@ -57,10 +57,10 @@ namespace YARG_Renderer
                         switch (mapMode)
                         {
                             case (0):
-                                Window.Render2D(Camera, World.geometry, g, 'X', 'Z');
+                                Window.Render2D(Camera, World, g, 'X', 'Z');
                                 break;
                             case (1):
-                                Window.Render2D(Camera, World.geometry, g, 'X', 'Y');
+                                Window.Render2D(Camera, World, g, 'X', 'Y');
                                 break;
                         }
 
@@ -69,7 +69,7 @@ namespace YARG_Renderer
                     {
                         g.Clear(Color.Black);
 
-                        Window.Render(Camera, World.geometry, g);
+                        Window.Render(Camera, World, g);
                     }
                 }
 

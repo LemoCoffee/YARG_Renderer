@@ -69,9 +69,9 @@ namespace YARG_Renderer
                 (byte)(pixelColor.B * magnitude));
         }
 
-        public bool Render(Camera camera, List<Shape> geometry, Graphics g)
+        public bool Render(Camera camera, World world, Graphics g)
         {
-            var contacts = camera.CastRays(geometry);
+            var contacts = camera.CastRays(world);
             int pixelWidth = this.Width / (int)camera.Resolution.X;
             int pixelHeight = this.Height / (int)camera.Resolution.Y;
             pixelHeight = pixelWidth;
@@ -101,7 +101,7 @@ namespace YARG_Renderer
             return true;
         }
 
-        public bool Render2D(Camera camera, List<Shape> geometry, Graphics g, char axis1, char axis2)
+        public bool Render2D(Camera camera, World world, Graphics g, char axis1, char axis2)
         {
             g.ScaleTransform(5, 5);
             g.TranslateTransform(50, 50);
@@ -123,7 +123,7 @@ namespace YARG_Renderer
                 float dirY = GetAxisValue(direction, axis2) * 10;
                 g.DrawLine(objectPen, camera.Position.X, camera.Position.Y, camera.Position.X + dirX, camera.Position.Y + dirY);
 
-                foreach (Shape shape in geometry)
+                foreach (Shape shape in world.geometry)
                 {
                     float x = GetAxisValue(shape.Position, axis1);
                     float y = GetAxisValue(shape.Position, axis2);
